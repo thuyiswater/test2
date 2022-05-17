@@ -8,19 +8,19 @@ public class VariantCollection {
         v.addVariant(new CovidVariant("Beta", "210311A"));
         v.addVariant(new CovidVariant("Omicron", "211120D"));
         v.print(v.root);
-        System.out.println(v.search("210311A").name); // return the Beta variant
-        System.out.println(v.previous("211120D").name);
+        System.out.println(v.search("210311A").getName()); // return the Beta variant
+        System.out.println(v.previous("211120D").getName());
     }
 
-    Node root;
+    BTree root;
     public void addVariant(CovidVariant v) {
-        Node n = new Node(v);
+        BTree n = new BTree(v);
         if (root == null) {
             root = n;
             return;
         }
 
-        Node temp = root;
+        BTree temp = root;
         while (true) {
             if (temp.value.isGreater(v)) {
                 if (temp.left == null) {
@@ -37,7 +37,7 @@ public class VariantCollection {
     }
 
     public CovidVariant search(String code) {
-        Node temp = root;
+        BTree temp = root;
         CovidVariant v = new CovidVariant("abc", code);
 
         while (true) {
@@ -53,10 +53,10 @@ public class VariantCollection {
     }
 
     public CovidVariant previous(String code) {
-        Node temp = root;
+        BTree temp = root;
         CovidVariant v = new CovidVariant("Alpha", code);
         boolean found;
-        Node[] visit = new Node[100];
+        BTree[] visit = new BTree[100];
         int start = 0;
 
         while (true) {
@@ -99,7 +99,7 @@ public class VariantCollection {
         return null;
     }
 
-    private void print(Node n) {
+    private void print(BTree n) {
         if (n == null) return;
         print(n.left);
         System.out.println(n.value.name + " " + n.value.code);
@@ -115,6 +115,10 @@ class CovidVariant {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     boolean isGreater(CovidVariant v) {
         int i1 = Integer.parseInt(code.substring(0, 6));
         int i2 = Integer.parseInt(v.code.substring(0, 6));
@@ -128,11 +132,11 @@ class CovidVariant {
     }
 }
 
-class Node {
+class BTree {
     CovidVariant value;
-    Node right, left;
+    BTree right, left;
 
-    public Node(CovidVariant value) {
+    public BTree(CovidVariant value) {
         this.value = value;
         this.right = this.left = null;
     }
